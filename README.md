@@ -1,5 +1,103 @@
 # Module Lab: Building Full CRUD RESTful APIs with Flask
 
+
+# beloow are the images showing the http methods applied on this lab "Get,Post,Delete"
+
+![Dashboard Screenshot](image/Screenshot1.png)
+![Dashboard Screenshot](image/Screenshot2.png)
+![Dashboard Screenshot](image/Screenshot3.png)
+![Dashboard Screenshot](image/Screenshot4.png)
+![Dashboard Screenshot](image/Screenshot5.png)
+![Dashboard Screenshot](image/Screenshot6.png)
+
+
+
+
+For the POST Request (Create Event)
+Method Dropdown: POST
+URL Bar: http://127.0.0.1:5000/events (no slash at the end)
+Body Tab: Select raw
+Format Dropdown (Right next to Body tabs): Change "Text" to JSON
+Body Content:
+json
+   {
+       "title": "Hackathon"
+   }
+
+Click Send. (Expect a 201 Created status).
+
+For the PATCH Request (Update Event)
+Method Dropdown: PATCH
+URL Bar: http://127.0.0.1:5000/events/1 (Notice the /1 at the end. Also, note that the lab instructions had a typo saying /events1 — you MUST include the forward slash /).
+Body Tab: Select raw
+Format Dropdown: Change to JSON
+Body Content:
+json
+   {
+       "title": "Hackathon 2025"
+   }
+
+Click Send. (Expect a 200 OK status).
+Note: Ensure your request headers in Postman include Content-Type: application/json.
+1. GET all events (To verify initial state):
+Method: GET
+URL: http:/127.0.0.1:5000/events
+2. POST (Create a new event):
+Method: POST
+URL: http://127.0.0.1:5000/events
+Body (JSON):
+json
+
+{
+  "title": "Hackathon"
+}
+Expected Response: 201 Created with the new event data.
+3. PATCH (Update an existing event):
+Method: PATCH
+URL: http://127.0.0.1:5000/events/1 (Note: Lab instructions had a typo /events1; the correct REST format is /events/1)
+Body (JSON):
+json
+
+{
+  "title": "Hackathon 2025"
+}
+
+Expected Response: 200 OK with the updated event data.
+4. DELETE (Remove an event):
+Method: DELETE
+URL: http://127.0.0.1:5000/events/2
+Expected Response: 200 OK with a success message.
+
+
+pipenv install 
+pipenv install flask 
+pipenv install pytest
+pipenv shell
+# 1. Check which branch you are on (should be feature-crud-api)
+git branch
+
+# 2. Add all changes to the staging area
+git add app.py
+
+# 3. Commit your changes with a descriptive message
+git commit -m "Add POST, PATCH, and DELETE routes for events"
+
+# 4. Push the feature branch to GitHub
+git push origin feature-crud-api
+
+# 5. Switch to main branch and merge your feature branch
+git checkout main
+git pull origin main
+git merge feature-crud-api
+
+# 6. Delete the local feature branch (cleanup)
+git branch -d feature-crud-api
+
+# 7. Push the updated main branch to GitHub to finalize submission
+git push origin main
+
+
+
 ## Learning Goals
 
 - Implement RESTful API endpoints using Flask.
@@ -171,3 +269,18 @@ After completing this lab, you will:
 ✅ Return proper HTTP status codes and structured responses  
 
 This is a critical step in your backend developer journey. Next up: persistent databases!
+
+
+
+# TODO: DELETE /events/<id> - Remove an event from the list
+@app.route('/events/<id>', methods=['DELETE'])
+def delete_event(id):
+    # Search for the event by ID using enumerate to get the index
+    for index, event in enumerate(events):
+        if event.id == id:
+            # Remove from list and return 204 No Content (Empty body)
+            del events[index]
+            return '', 204
+
+    # Return 404 Not Found if ID does not exist
+    return jsonify({"error": "Event not found"}), 404
